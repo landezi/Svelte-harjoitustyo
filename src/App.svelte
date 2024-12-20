@@ -10,6 +10,7 @@
   }
 
   let manaCost;
+  let attack;
 
   function serialize(obj) {
     const str = [];
@@ -21,7 +22,7 @@
   }
 
   function luoHakuUrl() {
-    const queryString = serialize({ manaCost });
+    const queryString = serialize({ manaCost, attack });
     console.log(queryString);
     return queryString;
   }
@@ -29,6 +30,7 @@
 
 <main>
   <input id="name" type="text" bind:value={manaCost} />
+  <input id="name" type="text" bind:value={attack} />
   <button on:click={() => getCards()}>Hae kortteja</button>
 </main>
 
