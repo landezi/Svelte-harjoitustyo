@@ -1,12 +1,34 @@
 <script>
   function getCards() {
-    fetch('https://us.api.blizzard.com/hearthstone/cards?locale=en_US', {
-      headers: { Authorization: `Bearer ${import.meta.env.VITE_API_KEY}` },
-    });
+    const queryString = luoHakuUrl();
+    fetch(
+      `https://us.api.blizzard.com/hearthstone/cards?locale=en_US${queryString}`,
+      {
+        headers: { Authorization: `Bearer ${import.meta.env.VITE_API_KEY}` },
+      }
+    );
+  }
+
+  let manaCost;
+
+  function serialize(obj) {
+    const str = [];
+    for (const p in obj)
+      if (obj.hasOwnProperty(p)) {
+        str.push(encodeURIComponent(p) + '=' + encodeURIComponent(obj[p]));
+      }
+    return '&' + str.join('&');
+  }
+
+  function luoHakuUrl() {
+    const queryString = serialize({ manaCost });
+    console.log(queryString);
+    return queryString;
   }
 </script>
 
 <main>
+  <input id="name" type="text" bind:value={manaCost} />
   <button on:click={() => getCards()}>Hae kortteja</button>
 </main>
 
