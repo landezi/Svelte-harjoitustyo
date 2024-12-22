@@ -80,12 +80,10 @@
   {#if naytaModal}
     <Modal>
       <button id="modalbutton" on:click={suljeUusi}>Sulje</button>
-      {#if kortinkuva}
-        <div>
-          <h3>{kortinkuva.name}</h3>
-          <img src={kortinkuva.image} alt="kortinkuva" />
-        </div>
-      {/if}
+      <div>
+        <h3>{kortinkuva.name}</h3>
+        <img src={kortinkuva.image} alt="kortinkuva" />
+      </div>
     </Modal>
   {/if}
 </main>
