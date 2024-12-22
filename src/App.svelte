@@ -8,6 +8,7 @@
   let kortit = [];
   let naytaModal = false;
   let kortinkuva = null;
+  $: tyhjakentta = !(manaCost >= 0 && attack >= 0 && health >= 0);
 
   function getCards() {
     const queryString = luoHakuUrl();
@@ -52,14 +53,16 @@
 <main>
   <Otsikko />
 
-  <div>
-    <p>Mana cost:</p>
+  <div id="syotto">
+    <label for="mana">Mana cost:</label>
     <input id="mana" type="number" bind:value={manaCost} />
-    <button on:click={getCards}>Hae kortteja</button>
-    <p>Attack:</p>
+    <label for="attack">Attack:</label>
     <input id="attack" type="number" bind:value={attack} />
-    <p>Health:</p>
+    <label for="health">Health:</label>
     <input id="health" type="number" bind:value={health} />
+    <button id="haekortteja" on:click={getCards} disabled={tyhjakentta}
+      >Hae kortteja</button
+    >
   </div>
 
   {#if kortit.length > 0}
@@ -94,7 +97,7 @@
     color: burlywood;
   }
 
-  p {
+  #syotto {
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     size: 6cm;
     color: brown;
@@ -130,5 +133,11 @@
   h3 {
     color: white;
     text-align: center;
+  }
+
+  button:disabled {
+    color: rgb(255, 255, 255);
+    background-color: grey;
+    transform: scale(1);
   }
 </style>
