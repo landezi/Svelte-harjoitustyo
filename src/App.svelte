@@ -4,7 +4,6 @@
 
   let manaCost;
   let attack;
-  let image;
   let health;
   let kortit = [];
   let naytaModal = false;
@@ -33,7 +32,7 @@
   }
 
   function luoHakuUrl() {
-    const queryString = serialize({ manaCost, attack, image, health });
+    const queryString = serialize({ manaCost, attack, health });
     console.log(queryString);
     return queryString;
   }
