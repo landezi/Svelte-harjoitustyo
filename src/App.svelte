@@ -7,6 +7,7 @@
   let health;
   let kortit = [];
   let naytaModal = false;
+  let kortinkuva = null;
 
   function getCards() {
     const queryString = luoHakuUrl();
@@ -37,12 +38,14 @@
     return queryString;
   }
 
-  function avaaUusi() {
+  function avaaUusi(kortti) {
     naytaModal = true;
+    kortinkuva = kortti;
   }
 
   function suljeUusi() {
     naytaModal = false;
+    kortinkuva = null;
   }
 </script>
 
@@ -52,32 +55,37 @@
   <div>
     <p>Mana cost:</p>
     <input id="mana" type="number" bind:value={manaCost} />
-    <button
-      on:click={() => {
-        getCards();
-        avaaUusi();
-      }}>Hae kortteja</button
-    >
+    <button on:click={getCards}>Hae kortteja</button>
     <p>Attack:</p>
     <input id="attack" type="number" bind:value={attack} />
     <p>Health:</p>
     <input id="health" type="number" bind:value={health} />
   </div>
 
-  {#if (kortit.length > 0, naytaModal)}
+  {#if kortit.length > 0}
+    <div>
+      <h2>Kortit:</h2>
+      <ul>
+        {#each kortit as kortti}
+          <li>
+            <button id="kortinnimi" on:click={() => avaaUusi(kortti)}
+              >{kortti.name}</button
+            >
+          </li>
+        {/each}
+      </ul>
+    </div>
+  {/if}
+
+  {#if naytaModal}
     <Modal>
       <button id="modalbutton" on:click={suljeUusi}>Sulje</button>
-      <div>
-        <h2>Kortit:</h2>
-        <ul>
-          {#each kortit as kortit}
-            <li>
-              <h3>{kortit.name}</h3>
-              <img src={kortit.image} alt="" />
-            </li>
-          {/each}
-        </ul>
-      </div>
+      {#if kortinkuva}
+        <div>
+          <h3>{kortinkuva.name}</h3>
+          <img src={kortinkuva.image} alt="kortinkuva" />
+        </div>
+      {/if}
     </Modal>
   {/if}
 </main>
@@ -98,10 +106,6 @@
     color: brown;
   }
 
-  h3 {
-    color: rgb(255, 255, 255);
-  }
-
   #modalbutton {
     position: fixed;
     top: 10px;
@@ -110,5 +114,23 @@
     color: aliceblue;
     border-radius: 5vh;
     border-width: 7px;
+  }
+
+  #kortinnimi {
+    background: rgb(21, 66, 71);
+    color: aliceblue;
+    transition:
+      background-color 0.1s ease,
+      transform 0.1s ease;
+  }
+
+  button:hover {
+    transform: scale(1.05);
+    background-color: #b12a1b;
+  }
+
+  h3 {
+    color: white;
+    text-align: center;
   }
 </style>
