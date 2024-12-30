@@ -135,7 +135,7 @@
         <button on:click={sekoitakortit}>Randomize</button>
         {#each kortit as kortti, index (kortti.id)}
           <div
-            in:fly={{ duration: 200, x: -200, delay: index * 80 }}
+            in:fly|global={{ duration: 200, x: -200, delay: index * 80 }}
             animate:flip={{ easing: cubicOut }}
           >
             <button id="kortinnimi" on:click={() => avaaUusi(kortti)}>
