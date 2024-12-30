@@ -6,12 +6,38 @@
   import { flip } from 'svelte/animate';
   import { cubicOut } from 'svelte/easing';
 
+  const clientId = import.meta.env.VITE_CLIENT_ID;
+  const clientSecret = import.meta.env.VITE_CLIENT_SECRET;
+  const url = 'https://oauth.battle.net/token';
+
   let manaCost = null;
   let attack = null;
   let health = null;
   let kortit = [];
+  let dekki = [];
   let naytaModal = false;
   let kortinkuva = null;
+  let accessToken = '';
+
+  const headers = {
+    Authorization: 'Basic ' + btoa(clientId + ':' + clientSecret),
+    'Content-Type': 'application/x-www-form-urlencoded',
+  };
+
+  const body = new URLSearchParams({
+    grant_type: 'client_credentials',
+  });
+
+  fetch(url, {
+    method: 'POST',
+    headers: headers,
+    body: body,
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+      accessToken = data.access_token;
+    });
 
   const validiNumero = (arvo) => {
     return arvo !== null && arvo >= 0;
@@ -27,7 +53,7 @@
     fetch(
       `https://us.api.blizzard.com/hearthstone/cards?locale=en_US${queryString}`,
       {
-        headers: { Authorization: `Bearer ${import.meta.env.VITE_API_KEY}` },
+        headers: { Authorization: `Bearer ${accessToken}` },
       }
     )
       .then((response) => response.json())
@@ -63,6 +89,10 @@
   function sekoitakortit() {
     kortit = kortit.sort(() => Math.random() - 0.5);
   }
+
+  const lisaaDekkiin = (event) => {
+    dekki = [...dekki, event.detail];
+  };
 </script>
 
 <main>
@@ -111,6 +141,9 @@
             <button id="kortinnimi" on:click={() => avaaUusi(kortti)}>
               {kortti.name}
             </button>
+            <button on:click={() => lisaaDekkiin({ detail: kortti })}>
+              Lisää dekkiin
+            </button>
           </div>
         {/each}
       </ul>
@@ -126,6 +159,19 @@
       </div>
     </Modal>
   {/if}
+
+  <div id="dekki">
+    {#if dekki.length > 0}
+      <div>
+        <h2>Dekki:</h2>
+        <ul>
+          {#each dekki as kortti}
+            <div>{kortti.name}</div>
+          {/each}
+        </ul>
+      </div>
+    {/if}
+  </div>
 </main>
 
 <style>
@@ -194,5 +240,14 @@
   button:disabled {
     background-color: grey;
     cursor: not-allowed;
+  }
+
+  #dekki {
+    color: white;
+    width: 200px;
+    position: fixed;
+    top: 15%;
+    right: 0;
+    padding: 5rem;
   }
 </style>
