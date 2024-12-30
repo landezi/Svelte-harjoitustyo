@@ -11,7 +11,7 @@
 </script>
 
 <input
-  type="text"
+  type="number"
   bind:value={arvo}
   class:tyhja={!onkoValidi && onkoVierailtu}
   on:blur={vierailtu}

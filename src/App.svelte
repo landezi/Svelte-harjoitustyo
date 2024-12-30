@@ -4,17 +4,20 @@
   import Otsikko from './otsikko.svelte';
   import { fly } from 'svelte/transition';
 
-  let manaCost = '';
-  let attack = '';
-  let health = '';
+  let manaCost = null;
+  let attack = null;
+  let health = null;
   let kortit = [];
   let naytaModal = false;
   let kortinkuva = null;
 
-  const validiTekstiKentta = (teksti) => teksti.trim().length > 0;
-  $: validiMana = validiTekstiKentta(manaCost);
-  $: validiAttack = validiTekstiKentta(attack);
-  $: validiHealth = validiTekstiKentta(health);
+  const validiNumero = (arvo) => {
+    return arvo !== null && arvo >= 0;
+  };
+
+  $: validiMana = validiNumero(manaCost);
+  $: validiAttack = validiNumero(attack);
+  $: validiHealth = validiNumero(health);
   $: voiHakea = validiMana && validiAttack && validiHealth;
 
   function getCards() {
