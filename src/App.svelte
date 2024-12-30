@@ -246,7 +246,7 @@
     color: white;
     width: 200px;
     position: fixed;
-    top: 15%;
+    top: 20%;
     right: 0;
     padding: 5rem;
   }
