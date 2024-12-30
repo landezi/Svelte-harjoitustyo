@@ -1,14 +1,21 @@
 <script>
+  import Validointi from './Validointi.svelte';
   import Modal from './Modal.svelte';
   import Otsikko from './otsikko.svelte';
+  import { fly } from 'svelte/transition';
 
-  let manaCost;
-  let attack;
-  let health;
+  let manaCost = '';
+  let attack = '';
+  let health = '';
   let kortit = [];
   let naytaModal = false;
   let kortinkuva = null;
-  $: tyhjakentta = !(manaCost >= 0 && attack >= 0 && health >= 0);
+
+  const validiTekstiKentta = (teksti) => teksti.trim().length > 0;
+  $: validiMana = validiTekstiKentta(manaCost);
+  $: validiAttack = validiTekstiKentta(attack);
+  $: validiHealth = validiTekstiKentta(health);
+  $: voiHakea = validiMana && validiAttack && validiHealth;
 
   function getCards() {
     const queryString = luoHakuUrl();
@@ -54,27 +61,45 @@
   <Otsikko />
 
   <div id="syotto">
-    <label for="mana">Mana cost:</label>
-    <input id="mana" type="number" bind:value={manaCost} />
-    <label for="attack">Attack:</label>
-    <input id="attack" type="number" bind:value={attack} />
-    <label for="health">Health:</label>
-    <input id="health" type="number" bind:value={health} />
-    <button id="haekortteja" on:click={getCards} disabled={tyhjakentta}
-      >Hae kortteja</button
-    >
+    <div class="kentta">
+      <label for="mana">Mana cost:</label>
+      <Validointi
+        bind:arvo={manaCost}
+        onkoValidi={validiMana}
+        virheviesti="Ilmoita kortin Mana cost!"
+      />
+    </div>
+    <div class="kentta">
+      <label for="attack">Attack:</label>
+      <Validointi
+        bind:arvo={attack}
+        onkoValidi={validiAttack}
+        virheviesti="Ilmoita kortin Attack!"
+      />
+    </div>
+    <div class="kentta">
+      <label for="health">Health:</label>
+      <Validointi
+        bind:arvo={health}
+        onkoValidi={validiHealth}
+        virheviesti="Ilmoita kortin Health!"
+      />
+    </div>
+    <button id="haekortteja" on:click={getCards} disabled={!voiHakea}>
+      Hae kortteja
+    </button>
   </div>
 
   {#if kortit.length > 0}
     <div>
       <h2>Kortit:</h2>
       <ul>
-        {#each kortit as kortti}
-          <li>
-            <button id="kortinnimi" on:click={() => avaaUusi(kortti)}
-              >{kortti.name}</button
-            >
-          </li>
+        {#each kortit as kortti, index (kortti.id)}
+          <div in:fly={{ duration: 1000, x: 300, y: 0, delay: index * 200 }}>
+            <button id="kortinnimi" on:click={() => avaaUusi(kortti)}>
+              {kortti.name}
+            </button>
+          </div>
         {/each}
       </ul>
     </div>
@@ -92,15 +117,22 @@
 </main>
 
 <style>
-  button {
-    background-color: black;
-    color: burlywood;
+  #syotto {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    color: brown;
   }
 
-  #syotto {
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    size: 6cm;
-    color: brown;
+  .kentta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .kentta label {
+    margin-bottom: 0.5rem;
   }
 
   h2 {
@@ -135,9 +167,20 @@
     text-align: center;
   }
 
+  button {
+    background-color: black;
+    color: burlywood;
+    height: fit-content;
+    align-self: center;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    margin-top: 15px;
+    margin-left: 15px;
+  }
+
   button:disabled {
-    color: rgb(255, 255, 255);
     background-color: grey;
-    transform: scale(1);
+    cursor: not-allowed;
   }
 </style>
