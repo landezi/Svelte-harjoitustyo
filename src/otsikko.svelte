@@ -10,6 +10,9 @@
   h1 {
     color: aliceblue;
     align-items: center;
+    text-shadow:
+      7px 7px 5px black,
+      0 0 25px rgb(255, 255, 255);
   }
 
   main {

@@ -1,9 +1,10 @@
 <script>
+  import { blur, scale } from 'svelte/transition';
 </script>
 
-<div class="backdrop" />
+<div class="backdrop" out:blur={{ duration: 350 }} />
 
-<div class="modal">
+<div class="modal" in:scale={{ duration: 300 }} out:blur={{ duration: 350 }}>
   <header>
     <slot name="header" />
   </header>

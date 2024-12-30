@@ -3,6 +3,8 @@
   import Modal from './Modal.svelte';
   import Otsikko from './otsikko.svelte';
   import { fly } from 'svelte/transition';
+  import { flip } from 'svelte/animate';
+  import { cubicOut } from 'svelte/easing';
 
   let manaCost = null;
   let attack = null;
@@ -45,7 +47,6 @@
 
   function luoHakuUrl() {
     const queryString = serialize({ manaCost, attack, health });
-    console.log(queryString);
     return queryString;
   }
 
@@ -57,6 +58,10 @@
   function suljeUusi() {
     naytaModal = false;
     kortinkuva = null;
+  }
+
+  function sekoitakortit() {
+    kortit = kortit.sort(() => Math.random() - 0.5);
   }
 </script>
 
@@ -97,8 +102,12 @@
     <div>
       <h2>Kortit:</h2>
       <ul>
+        <button on:click={sekoitakortit}>Randomize</button>
         {#each kortit as kortti, index (kortti.id)}
-          <div in:fly={{ duration: 1000, x: 300, y: 0, delay: index * 200 }}>
+          <div
+            in:fly={{ duration: 200, x: -200, delay: index * 80 }}
+            animate:flip={{ easing: cubicOut }}
+          >
             <button id="kortinnimi" on:click={() => avaaUusi(kortti)}>
               {kortti.name}
             </button>
@@ -143,7 +152,7 @@
   }
 
   #modalbutton {
-    position: fixed;
+    position: absolute;
     top: 10px;
     right: 10px;
     background-color: rgb(0, 0, 0);
@@ -172,7 +181,7 @@
 
   button {
     background-color: black;
-    color: burlywood;
+    color: rgb(255, 255, 255);
     height: fit-content;
     align-self: center;
     padding: 0.5rem 1rem;
